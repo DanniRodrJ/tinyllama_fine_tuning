@@ -1,1 +1,7 @@
 trl==0.16.0
+tf-keras==2.19.0
+peft
+torchtune
+torch
+transformers
+datasets

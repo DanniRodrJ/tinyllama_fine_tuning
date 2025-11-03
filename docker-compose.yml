@@ -1,15 +1,9 @@
-# docker-compose.yml
-
-version: '3.8'
-
 services:
   llm-assistant:
-    # 1. Construye la imagen usando el Dockerfile en este directorio
     build:
       context: .
       dockerfile: Dockerfile
     
-    # 2. Mapea el código local al contenedor
     volumes:
       - .:/app
     
@@ -17,12 +11,12 @@ services:
     # Ejecuta el pipeline principal de Python
     # command: python src/main.py
     
-    # 4. Asigna más memoria/CPU si es necesario (opcional)
+    # 4. Asigna más memoria/CPU si es necesario
     # resources:
     #   limits:
     #     memory: 8G 
     #     cpus: '4'
 
-    # 5. Mantiene el contenedor activo para inspección (opcional, si quieres debugging)
+    # 5. Mantiene el contenedor activo para inspección
     entrypoint: ["/bin/bash"] 
     tty: true
