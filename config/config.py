@@ -2,15 +2,16 @@ from peft import LoraConfig
 from trl import SFTConfig
 
 class TravelAssistantConfig:
-    # --- Rutas y Nombres de Modelo ---
+    FORCE_RE_TRAIN = False  # Si es True, ignora los checkpoints y entrena de cero.
     MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v0.1"
     DATASET_NAME = 'bitext/Bitext-travel-llm-chatbot-training-dataset'
     DATASET_SPLIT = "train"
     TRAIN_RECORDS_LIMIT = 50
-    ADAPTER_OUTPUT_DIR = "./model/tinyllama_travel_adapter"
+    ADAPTER_OUTPUT_DIR = "./models/tinyllama_travel_adapter"
+    PREPROCESSED_DATA_DIR = "./data/prepocessed_dataset"
     
-    # --- Configuración de LoRA (PEFT) ---
-    LORA_CONFIG = LoraConfig(
+    # Configuración de LoRA (PEFT)
+    LORA_CONFIG = LoraConfig( 
         r=12,
         lora_alpha=8,
         task_type="CAUSAL_LM",
@@ -19,7 +20,7 @@ class TravelAssistantConfig:
         target_modules=['q_proj', 'v_proj']
     )
 
-    # --- Configuración de Entrenamiento (SFTConfig) ---
+    # Configuración de Entrenamiento (SFTConfig)
     SFT_CONFIG = SFTConfig(
         # Parámetros de TrainingArguments:
         learning_rate=2e-3, 

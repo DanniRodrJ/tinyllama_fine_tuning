@@ -1,24 +1,11 @@
-# main_run.py
-
 from src.pipeline import TravelAssistantPipeline
-from src.config import TravelAssistantConfig as Config
-import os
+from config.config import TravelAssistantConfig as Config
 
 if __name__ == '__main__':
     pipeline = TravelAssistantPipeline()
-    
-    # 1. Ejecutar Entrenamiento (Descomentar para entrenar)
-    # pipeline.train() 
 
-    # 2. Cargar y Fusionar Modelo para Inferencia
-    # Si ya entrenaste, asegúrate de que el directorio del checkpoint exista
-    if os.path.exists(Config.ADAPTER_OUTPUT_DIR):
-        pipeline.load_for_inference()
-    else:
-        print("❌ ERROR: No se encontraron checkpoints de LoRA. Descomenta y ejecuta pipeline.train() primero.")
-        exit()
+    pipeline.run_or_load(force_train=Config.FORCE_RE_TRAIN)
 
-    # 3. Prueba Final
     instruction_to_test = "I'd like information about my checked baggage allowance, how can I find it?"
     
     model_response = pipeline.generate_response(instruction_to_test)

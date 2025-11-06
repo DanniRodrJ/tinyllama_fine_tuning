@@ -1,9 +1,12 @@
 import torch
+from datasets import Dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from trl import SFTTrainer
 from peft import PeftModel
-from src.config import TravelAssistantConfig as Config
+import os
+from config.config import TravelAssistantConfig as Config
 from src.data_preparation import load_and_prepare_dataset
+
 
 class TravelAssistantPipeline:
     def __init__(self):
@@ -11,6 +14,9 @@ class TravelAssistantPipeline:
         self.model = None
         self.merged_model = None
         self.train_dataset = load_and_prepare_dataset()
+        
+        if not os.path.exists(Config.PREPROCESSED_DATA_DIR):
+            self.train_dataset.save_to_disk(Config.PREPROCESSED_DATA_DIR)
     
     def _load_base_components(self):
         """Carga el modelo base y el tokenizer."""
@@ -26,7 +32,6 @@ class TravelAssistantPipeline:
         
         self._load_base_components()
         
-        print("Inicializando SFTTrainer...")
         trainer = SFTTrainer(
             model=self.model,
             train_dataset=self.train_dataset,
@@ -46,18 +51,23 @@ class TravelAssistantPipeline:
     def load_for_inference(self):
         """Carga el modelo base y fusiona los adaptadores para inferencia."""
         
-        # 1. Cargar Tokenizer
+        # Definir el directorio de offload (Si no cuentas con GPU)
+        OFFLOAD_FOLDER = os.path.join(os.getcwd(), "offload_temp")
+        os.makedirs(OFFLOAD_FOLDER, exist_ok=True)
+        
+        # Cargar Tokenizer
         self.tokenizer = AutoTokenizer.from_pretrained(Config.ADAPTER_OUTPUT_DIR)
         self.tokenizer.pad_token = self.tokenizer.eos_token
         
-        # 2. Cargar el modelo base
+        # Cargar el modelo base
         base_model_for_inference = AutoModelForCausalLM.from_pretrained(
             Config.MODEL_NAME,
             torch_dtype=torch.float16, 
-            device_map="auto"
+            device_map="auto",
+            offload_folder=OFFLOAD_FOLDER
         )
 
-        # 3. Cargar y fusionar adaptadores
+        # Cargar y fusionar adaptadores
         model_with_peft = PeftModel.from_pretrained(
             base_model_for_inference, 
             Config.ADAPTER_OUTPUT_DIR
@@ -66,6 +76,28 @@ class TravelAssistantPipeline:
         self.merged_model = model_with_peft.merge_and_unload()
         self.merged_model.eval() 
         print("Modelo base y adaptadores LoRA fusionados.")
+        
+        
+    def run_or_load(self, force_train=False):
+        """Condiciona la ejecución: si existen checkpoints, salta el entrenamiento."""
+        adapter_exists = os.path.exists(Config.ADAPTER_OUTPUT_DIR)
+        
+        if adapter_exists and not force_train:
+            print("\n" + "="*50)
+            print(f"✅ Checkpoint encontrado: Cargando adaptadores desde {Config.ADAPTER_OUTPUT_DIR}")
+            print("Saltando el entrenamiento.")
+            print("="*50 + "\n")
+            
+            self.load_for_inference()
+        else:
+            if adapter_exists and force_train:
+                print("⚠️ Se encontró el checkpoint, pero se forzó el re-entrenamiento.")
+            elif not adapter_exists:
+                print("❌ No se encontró el checkpoint. Iniciando entrenamiento de cero.")
+            
+            self.train()
+            
+            self.load_for_inference()
 
 
     def generate_response(self, instruction, max_new_tokens=100):

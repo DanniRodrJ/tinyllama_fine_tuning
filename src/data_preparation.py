@@ -1,7 +1,7 @@
 from datasets import Dataset, load_dataset
 from collections import defaultdict
 import random
-from src.config import DATASET_NAME, DATASET_SPLIT, TRAIN_RECORDS_LIMIT
+from config.config import TravelAssistantConfig as Config
 
 def merger_conversation(row):
     """Convierte las columnas 'instruction' y 'response' a un formato conversacional"""
@@ -12,7 +12,7 @@ def merger_conversation(row):
 def load_and_prepare_dataset():
     """Carga, muestrea y formatea el dataset para fine-tuning"""
     
-    ds = load_dataset(DATASET_NAME, split=DATASET_SPLIT)
+    ds = load_dataset(Config.DATASET_NAME, split=Config.DATASET_SPLIT)
     
     random.seed(42)
     intent_groups = defaultdict(list)
@@ -28,7 +28,7 @@ def load_and_prepare_dataset():
         balanced_subset.extend(sampled)
 
     # Limitar al número total de registros deseados
-    travel_chat_ds = Dataset.from_list(balanced_subset[:TRAIN_RECORDS_LIMIT])
+    travel_chat_ds = Dataset.from_list(balanced_subset[:Config.TRAIN_RECORDS_LIMIT])
     
     travel_chat_ds_ = travel_chat_ds.map(merger_conversation)
     
