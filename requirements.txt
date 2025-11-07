@@ -5,3 +5,4 @@ torchtune
 torch
 transformers
 datasets
+streamlit

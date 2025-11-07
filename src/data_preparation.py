@@ -2,16 +2,18 @@ from datasets import Dataset, load_dataset
 from collections import defaultdict
 import random
 from config.config import TravelAssistantConfig as Config
+from utils.logger import app_logger
 
 def merger_conversation(row):
-    """Convierte las columnas 'instruction' y 'response' a un formato conversacional"""
+    """Converts 'instruction' and 'response' columns to conversational format"""
     
     row['conversation'] = f"Query: {row['instruction']}\nResponse: {row['response']}"
     return row
 
 def load_and_prepare_dataset():
-    """Carga, muestrea y formatea el dataset para fine-tuning"""
+    """Loads, samples, and formats the dataset for fine-tuning"""
     
+    app_logger.info(f"Loading base dataset from Hugging Face: {Config.DATASET_NAME}")
     ds = load_dataset(Config.DATASET_NAME, split=Config.DATASET_SPLIT)
     
     random.seed(42)
@@ -30,10 +32,11 @@ def load_and_prepare_dataset():
     # Limitar al número total de registros deseados
     travel_chat_ds = Dataset.from_list(balanced_subset[:Config.TRAIN_RECORDS_LIMIT])
     
+    app_logger.info(f"Applying balanced sampling: {len(travel_chat_ds)} final records")
     travel_chat_ds_ = travel_chat_ds.map(merger_conversation)
     
     return travel_chat_ds_
 
 if __name__ == '__main__':
     prepared_ds = load_and_prepare_dataset()
-    print(prepared_ds)
+    app_logger.info(prepared_ds)

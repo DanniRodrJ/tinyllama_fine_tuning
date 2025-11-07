@@ -1,12 +1,12 @@
+import os
 import torch
 from datasets import Dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from trl import SFTTrainer
 from peft import PeftModel
-import os
 from config.config import TravelAssistantConfig as Config
 from src.data_preparation import load_and_prepare_dataset
-
+from utils.logger import app_logger
 
 class TravelAssistantPipeline:
     def __init__(self):
@@ -19,7 +19,7 @@ class TravelAssistantPipeline:
             self.train_dataset.save_to_disk(Config.PREPROCESSED_DATA_DIR)
     
     def _load_base_components(self):
-        """Carga el modelo base y el tokenizer."""
+        """Loads the base model and tokenizer"""
         
         if self.tokenizer is None:
             self.tokenizer = AutoTokenizer.from_pretrained(Config.MODEL_NAME)
@@ -28,7 +28,7 @@ class TravelAssistantPipeline:
             self.model = AutoModelForCausalLM.from_pretrained(Config.MODEL_NAME)
 
     def train(self):
-        """Ejecuta el fine-tuning y guarda los adaptadores."""
+        """Executes fine-tuning and saves the adapters"""
         
         self._load_base_components()
         
@@ -39,17 +39,17 @@ class TravelAssistantPipeline:
             peft_config=Config.LORA_CONFIG,
         )
 
-        print("Iniciando el fine-tuning...")
+        app_logger.info("Starting fine-tuning...")
         trainer.train()
-        print("Fine-tuning completado.")
+        app_logger.info("Fine-tuning completed")
 
         # Guardar adaptadores LoRA y tokenizer
         trainer.model.save_pretrained(Config.ADAPTER_OUTPUT_DIR)
         self.tokenizer.save_pretrained(Config.ADAPTER_OUTPUT_DIR)
-        print(f"Adaptadores LoRA guardados en: {Config.ADAPTER_OUTPUT_DIR}")
+        app_logger.info(f"LoRA adapters saved to: {Config.ADAPTER_OUTPUT_DIR}")
 
     def load_for_inference(self):
-        """Carga el modelo base y fusiona los adaptadores para inferencia."""
+        """Loads the base model and merges the adapters for inference."""
         
         # Definir el directorio de offload (Si no cuentas con GPU)
         OFFLOAD_FOLDER = os.path.join(os.getcwd(), "offload_temp")
@@ -75,25 +75,25 @@ class TravelAssistantPipeline:
 
         self.merged_model = model_with_peft.merge_and_unload()
         self.merged_model.eval() 
-        print("Modelo base y adaptadores LoRA fusionados.")
+        app_logger.info("Base model and LoRA adapters merged.")
         
         
     def run_or_load(self, force_train=False):
-        """Condiciona la ejecución: si existen checkpoints, salta el entrenamiento."""
+        """Conditionally runs training or loads the checkpoint"""
         adapter_exists = os.path.exists(Config.ADAPTER_OUTPUT_DIR)
         
         if adapter_exists and not force_train:
-            print("\n" + "="*50)
-            print(f"✅ Checkpoint encontrado: Cargando adaptadores desde {Config.ADAPTER_OUTPUT_DIR}")
-            print("Saltando el entrenamiento.")
-            print("="*50 + "\n")
+            app_logger.info("\n" + "="*50)
+            app_logger.info(f"✅ Checkpoint found: Loading adapters from {Config.ADAPTER_OUTPUT_DIR}")
+            app_logger.info("Skipping training")
+            app_logger.info("="*50 + "\n")
             
             self.load_for_inference()
         else:
             if adapter_exists and force_train:
-                print("⚠️ Se encontró el checkpoint, pero se forzó el re-entrenamiento.")
+                app_logger.warning("⚠️ Checkpoint found, but re-training was forced")
             elif not adapter_exists:
-                print("❌ No se encontró el checkpoint. Iniciando entrenamiento de cero.")
+                app_logger.error("❌ Checkpoint not found. Starting training from scratch")
             
             self.train()
             
@@ -108,7 +108,12 @@ class TravelAssistantPipeline:
 
         prompt = f"Query: {instruction}\nResponse:"
         
-        inputs = self.tokenizer(prompt, return_tensors="pt", padding=True, truncation=True)
+        inputs = self.tokenizer(
+            prompt, 
+            return_tensors="pt", 
+            padding=True, 
+            truncation=True,
+            max_length=Config.SFT_CONFIG.max_seq_length)
         device = self.merged_model.device
         inputs = {k: v.to(device) for k, v in inputs.items()}
 
