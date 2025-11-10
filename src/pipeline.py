@@ -6,7 +6,7 @@ from trl import SFTTrainer
 from peft import PeftModel
 from config.config import TravelAssistantConfig as Config
 from src.data_preparation import load_and_prepare_dataset
-from utils.logger import app_logger
+from src.utils.logger import app_logger
 
 class TravelAssistantPipeline:
     def __init__(self):
@@ -43,31 +43,31 @@ class TravelAssistantPipeline:
         trainer.train()
         app_logger.info("Fine-tuning completed")
 
-        # Guardar adaptadores LoRA y tokenizer
+        # Save LoRA adapters and tokenizer
         trainer.model.save_pretrained(Config.ADAPTER_OUTPUT_DIR)
         self.tokenizer.save_pretrained(Config.ADAPTER_OUTPUT_DIR)
         app_logger.info(f"LoRA adapters saved to: {Config.ADAPTER_OUTPUT_DIR}")
 
     def load_for_inference(self):
-        """Loads the base model and merges the adapters for inference."""
+        """Loads the base model and merges the adapters for inference"""
         
-        # Definir el directorio de offload (Si no cuentas con GPU)
+        # Define the offload directory (if you do not have a GPU)
         OFFLOAD_FOLDER = os.path.join(os.getcwd(), "offload_temp")
         os.makedirs(OFFLOAD_FOLDER, exist_ok=True)
         
-        # Cargar Tokenizer
+        # Load Tokenizer
         self.tokenizer = AutoTokenizer.from_pretrained(Config.ADAPTER_OUTPUT_DIR)
         self.tokenizer.pad_token = self.tokenizer.eos_token
         
-        # Cargar el modelo base
+        # Load the base model
         base_model_for_inference = AutoModelForCausalLM.from_pretrained(
             Config.MODEL_NAME,
             torch_dtype=torch.float16, 
             device_map="auto",
-            offload_folder=OFFLOAD_FOLDER
+            offload_folder=OFFLOAD_FOLDER  # Comment if you have a GPU
         )
 
-        # Cargar y fusionar adaptadores
+        # Load and merge adapters
         model_with_peft = PeftModel.from_pretrained(
             base_model_for_inference, 
             Config.ADAPTER_OUTPUT_DIR
@@ -75,7 +75,7 @@ class TravelAssistantPipeline:
 
         self.merged_model = model_with_peft.merge_and_unload()
         self.merged_model.eval() 
-        app_logger.info("Base model and LoRA adapters merged.")
+        app_logger.info("Base model and LoRA adapters merged")
         
         
     def run_or_load(self, force_train=False):
@@ -101,10 +101,10 @@ class TravelAssistantPipeline:
 
 
     def generate_response(self, instruction, max_new_tokens=100):
-        """Genera una respuesta usando el modelo fusionado."""
+        """Generate a response using the merged model"""
         
         if self.merged_model is None:
-            raise ValueError("El modelo de inferencia no ha sido cargado. Ejecuta .load_for_inference() primero.")
+            raise ValueError("El modelo de inferencia no ha sido cargado. Ejecuta .load_for_inference() primero")
 
         prompt = f"Query: {instruction}\nResponse:"
         
@@ -129,9 +129,9 @@ class TravelAssistantPipeline:
         full_response = self.tokenizer.decode(output_tokens[0], skip_special_tokens=True)
         
         try:
-            # Limpiar el prompt de la respuesta
+            # Clear the response prompt
             model_response = full_response.split("Response:")[1].strip()
         except IndexError:
-            model_response = "Error al decodificar la respuesta."
+            model_response = "Error decoding the response"
 
         return model_response

@@ -1,6 +1,25 @@
-# PROJECT
+# ✈️ Intelligent Travel Assistant LLM: TinyLlama Fine-Tuning with LoRA
 
-## Estructura del Proyecto
+This repository showcases a complete MLOps pipeline for adapting a Large Language Model (LLM) to a specialized domain: an intelligent travel assistant chatbot. The project utilizes Supervised Fine-Tuning (SFT) with Parameter-Efficient Fine-Tuning (PEFT) to achieve high-accuracy responses for travel queries.
+
+## ⚙️ Project Overview and Core Technologies
+
+The goal was to transform the general-purpose TinyLlama-1.1B model into a domain-specific Q&A engine for airline customer service data.
+
+### Key Technologies Demonstrated
+
+| Category   |      Tool / Technique      |  Purpose in Project |
+|----------|-------------|------|
+| **Model** |  TinyLlama-1.1B | Base LLM for causal language modeling |
+| **Fine-Tuning** |    LoRA (PEFT)   |   Parameter-Efficient Fine-Tuning to train adapters efficiently on limited hardware (GPU/CPU) |
+| **Pipeline** | TRL (SFTTrainer) |  High-level abstraction for SFT and efficient training loop management |
+| **Data & Core** | ```Hugging Face``` Ecosystem (```transformers```, ```datasets```) |  Handling models, tokenizers, and dataset preparation |
+| **Engineering** | Python Classes & Modularization |  Encapsulating training and inference logic (TravelAssistantPipeline) |
+| **Deployment** | Streamlit |  Creating an interactive web demo for presentation |
+
+## 🚀 MLOps Pipeline Structure
+
+The repository is structured following best practices for production-ready ML projects, separating configuration, data, source code, and artifacts.
 
 ```bash
 tinyllama_fine_tuning/         
@@ -31,13 +50,72 @@ tinyllama_fine_tuning/
 ├── src/                 
 │   ├── utils/           
 │   │   ├── logger.py
-│   ├── data_preparation.py   
-│   └── pipeline.py
+│   ├── data_preparation.py  # Functions for data loading, sampling, and formatting
+│   └── pipeline.py  # Primary class for the ML workflow (Train, Load, Infer).
 │
 ├── .gitignore
-├── docker-compose.yml
-├── Dockerfile
 ├── main.py
 ├── README.md
 └── requirements.txt    
 ```
+
+## 💡 Fine-Tuning Methodology
+
+1. Data Preparation
+
+    The bitext/Bitext-travel-llm-chatbot-training-dataset was sampled using a balanced approach across intents to create a development dataset of 50 records. Each record was formatted into the standard conversational structure required for SFT:  
+    ```"Query: [User Instruction]\nResponse: [Assistant Answer]"```
+2. Training (Supervised Fine-Tuning)
+   - **Technique**: LoRA was applied to target the attention projection layers (```q_proj```, ```v_proj```) of the base model.
+   - **Process**: The training was executed using the SFTTrainer (with configurations managed by SFTConfig), resulting in a final training loss of approx. 0.91.
+3. Inference and Deployment
+
+    The TravelAssistantPipeline class manages the conditional flow:
+    - It checks for existing adapter checkpoints in ./models/.
+    - If found, it loads the base model and merges the LoRA adapters into a single, efficient model (model.merge_and_unload()) for inference.
+
+## 💻 Setup and Execution
+
+### Prerequisites
+
+1. Clone this repository
+2. Install all dependencies (preferably in a virtual environment).
+   ```pip install -r requirements.txt```
+3. Download Checkpoints: Ensure the trained LoRA adapters (```adapter_model.safetensors```, etc.) from the Colab environment are placed in the directory ```./models/tinyllama_travel_adapter/```
+
+## MLOps Validation (CLI Mode)
+
+Execute ```main.py``` to run the full pipeline logic, including the sanity check and logging.
+
+```python main.py```
+
+Expected Console Output (Proof of Success): The pipeline will detect the saved adapter and skip training, demonstrating the MLOps logic:
+
+```bash
+2025-11-07 12:34:xx - INFO - ✅ Checkpoint found: Loading adapters from ./models/tinyllama_travel_adapter
+...
+2025-11-07 12:34:xx - INFO - Base model and LoRA adapters merged.
+...
+✅ CICLO DE INFERENCIA DE CLASE COMPLETADO ✅
+Instruction: I'd like information about my checked baggage allowance, how can I find it?
+Response Generated:
+To find details regarding your checked baggage allowance, please follow these steps:
+1. Visit {{WEBSITE_URL}} or access the {{APP_NAME}} application.
+...
+```
+
+## Interactive Demo (Streamlit)
+
+Launch the interactive web application for a demonstration.
+
+```bash
+streamlit run app.py
+```
+
+This command will open the specialized travel assistant interface in your browser.
+
+## ⚠️ Important Note: Language Scope
+
+This LLM was fine-tuned exclusively using English Q&A data. While the base TinyLlama model has multilinguistic capabilities, the specialized instruction tuning was conducted only in English.
+
+The model performs best on English queries and may generate inconsistent or incoherent responses when prompted in other languages.

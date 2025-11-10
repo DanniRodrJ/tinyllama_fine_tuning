@@ -2,7 +2,7 @@ from datasets import Dataset, load_dataset
 from collections import defaultdict
 import random
 from config.config import TravelAssistantConfig as Config
-from utils.logger import app_logger
+from src.utils.logger import app_logger
 
 def merger_conversation(row):
     """Converts 'instruction' and 'response' columns to conversational format"""
@@ -29,7 +29,7 @@ def load_and_prepare_dataset():
         sampled = random.sample(examples, min(samples_per_intent, len(examples)))
         balanced_subset.extend(sampled)
 
-    # Limitar al número total de registros deseados
+    # Limit to the total number of desired records
     travel_chat_ds = Dataset.from_list(balanced_subset[:Config.TRAIN_RECORDS_LIMIT])
     
     app_logger.info(f"Applying balanced sampling: {len(travel_chat_ds)} final records")
