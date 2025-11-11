@@ -1,6 +1,12 @@
 # ✈️ Intelligent Travel Assistant LLM: TinyLlama Fine-Tuning with LoRA
 
+![Project Cover Image](./assets/Fine-Tuning.png)
+
 This repository showcases a complete MLOps pipeline for adapting a Large Language Model (LLM) to a specialized domain: an intelligent travel assistant chatbot. The project utilizes Supervised Fine-Tuning (SFT) with Parameter-Efficient Fine-Tuning (PEFT) to achieve high-accuracy responses for travel queries.
+
+## Quick Access
+
+**[🚀 LIVE DEMO: Interact with the Travel Assistant App](https://tu-usuario.streamlit.app/tu-app)**
 
 ## ⚙️ Project Overview and Core Technologies
 
@@ -96,7 +102,7 @@ Expected Console Output (Proof of Success): The pipeline will detect the saved a
 ...
 2025-11-07 12:34:xx - INFO - Base model and LoRA adapters merged.
 ...
-✅ CICLO DE INFERENCIA DE CLASE COMPLETADO ✅
+✅ CLASS INFERENCE CYCLE COMPLETED ✅
 Instruction: I'd like information about my checked baggage allowance, how can I find it?
 Response Generated:
 To find details regarding your checked baggage allowance, please follow these steps:
@@ -119,3 +125,14 @@ This command will open the specialized travel assistant interface in your browse
 This LLM was fine-tuned exclusively using English Q&A data. While the base TinyLlama model has multilinguistic capabilities, the specialized instruction tuning was conducted only in English.
 
 The model performs best on English queries and may generate inconsistent or incoherent responses when prompted in other languages.
+
+## 📚 Project Context and Value Added
+
+This project originated as a **Supervised Fine-Tuning (SFT) Lab Challenge** on the [DataCamp platform](https://app.datacamp.com/learn/projects/2827)
+
+**Value Added by this Repository:**
+
+- **Modularization & MLOps:** The original monolithic notebook was refactored into a professional, modular Python package structure (`src/`, `config/`, `models/`).
+- **Pipeline Logic:** Implemented conditional execution logic (`run_or_load`) to separate the intensive training phase (Colab/GPU) from the lightweight inference phase (local CPU).
+- **Deployment Prototype:** Integrated a **Streamlit** application (`app.py`) to move the model from a simple console output to an interactive, deployable web demonstration.
+- **Best Practices:** Enforced standardized logging (`logger.py`) and explicit configuration management (`config.py`).

@@ -22,6 +22,8 @@ st.sidebar.warning("""
 **Language Warning:** This model was fine-tuned exclusively on an English Q&A dataset. 
 It performs best on English queries and may generate inconsistent or incorrect text if asked in other languages.
 """)
+st.sidebar.markdown("---")
+st.sidebar.info("💡 Project conceived as a Capstone Challenge on the DataCamp Platform.")
 
 @st.cache_resource
 def load_llm_pipeline():

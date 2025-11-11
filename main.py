@@ -14,7 +14,7 @@ if __name__ == '__main__':
         model_response = pipeline.generate_response(instruction_to_test)
         
         app_logger.info("-" * 50)
-        app_logger.info("✅ CCLASS INFERENCE CYCLE COMPLETED ✅")
+        app_logger.info("✅ CLASS INFERENCE CYCLE COMPLETED ✅")
         app_logger.info(f"Instruction: {instruction_to_test}")
         app_logger.info(f"Generated Response:\n{model_response}")
         app_logger.info("-" * 50)
