@@ -1,18 +1,19 @@
-# ✈️ Intelligent Travel Assistant LLM: TinyLlama Fine-Tuning with LoRA
+# ✈️ ```Intelligent Travel Assistant LLM: TinyLlama Fine-Tuning with LoRA```
 
 ![Project Cover Image](./assets/Fine-Tuning.png)
 
 This repository showcases a complete MLOps pipeline for adapting a Large Language Model (LLM) to a specialized domain: an intelligent travel assistant chatbot. The project utilizes Supervised Fine-Tuning (SFT) with Parameter-Efficient Fine-Tuning (PEFT) to achieve high-accuracy responses for travel queries.
 
-## Quick Access
+## 🚧 ```Quick Access```
 
+Coming soon
 **[🚀 LIVE DEMO: Interact with the Travel Assistant App](https://tu-usuario.streamlit.app/tu-app)**
 
-## ⚙️ Project Overview and Core Technologies
+## ⚙️ ```Project Overview and Core Technologies```
 
 The goal was to transform the general-purpose TinyLlama-1.1B model into a domain-specific Q&A engine for airline customer service data.
 
-### Key Technologies Demonstrated
+### 🛠️ ```Key Technologies Demonstrated```
 
 | Category   |      Tool / Technique      |  Purpose in Project |
 |----------|-------------|------|
@@ -23,7 +24,7 @@ The goal was to transform the general-purpose TinyLlama-1.1B model into a domain
 | **Engineering** | Python Classes & Modularization |  Encapsulating training and inference logic (TravelAssistantPipeline) |
 | **Deployment** | Streamlit |  Creating an interactive web demo for presentation |
 
-## 🚀 MLOps Pipeline Structure
+## 🚀 ```MLOps Pipeline Structure```
 
 The repository is structured following best practices for production-ready ML projects, separating configuration, data, source code, and artifacts.
 
@@ -65,31 +66,31 @@ tinyllama_fine_tuning/
 └── requirements.txt    
 ```
 
-## 💡 Fine-Tuning Methodology
+## 💡 ```Fine-Tuning Methodology```
 
-1. Data Preparation
+1. **Data Preparation**
 
     The bitext/Bitext-travel-llm-chatbot-training-dataset was sampled using a balanced approach across intents to create a development dataset of 50 records. Each record was formatted into the standard conversational structure required for SFT:  
     ```"Query: [User Instruction]\nResponse: [Assistant Answer]"```
-2. Training (Supervised Fine-Tuning)
+2. **Training (Supervised Fine-Tuning)**
    - **Technique**: LoRA was applied to target the attention projection layers (```q_proj```, ```v_proj```) of the base model.
    - **Process**: The training was executed using the SFTTrainer (with configurations managed by SFTConfig), resulting in a final training loss of approx. 0.91.
-3. Inference and Deployment
+3. **Inference and Deployment**
 
     The TravelAssistantPipeline class manages the conditional flow:
-    - It checks for existing adapter checkpoints in ./models/.
+    - It checks for existing adapter checkpoints in ```./models/```.
     - If found, it loads the base model and merges the LoRA adapters into a single, efficient model (model.merge_and_unload()) for inference.
 
-## 💻 Setup and Execution
+## 💻 ```Setup and Execution```
 
 ### Prerequisites
 
 1. Clone this repository
 2. Install all dependencies (preferably in a virtual environment).
    ```pip install -r requirements.txt```
-3. Download Checkpoints: Ensure the trained LoRA adapters (```adapter_model.safetensors```, etc.) from the Colab environment are placed in the directory ```./models/tinyllama_travel_adapter/```
+3. Download Checkpoints: Ensure the trained LoRA adapters (```adapter_model.safetensors```, etc.) are placed in the directory ```./models/tinyllama_travel_adapter/```
 
-## MLOps Validation (CLI Mode)
+### ✅ MLOps Validation (CLI Mode)
 
 Execute ```main.py``` to run the full pipeline logic, including the sanity check and logging.
 
@@ -110,7 +111,7 @@ To find details regarding your checked baggage allowance, please follow these st
 ...
 ```
 
-## Interactive Demo (Streamlit)
+### 👀 Interactive Demo (Streamlit)
 
 Launch the interactive web application for a demonstration.
 
@@ -120,13 +121,13 @@ streamlit run app.py
 
 This command will open the specialized travel assistant interface in your browser.
 
-## ⚠️ Important Note: Language Scope
+## ⚠️ ```Important Note: Language Scope```
 
 This LLM was fine-tuned exclusively using English Q&A data. While the base TinyLlama model has multilinguistic capabilities, the specialized instruction tuning was conducted only in English.
 
 The model performs best on English queries and may generate inconsistent or incoherent responses when prompted in other languages.
 
-## 📚 Project Context and Value Added
+## 📚 ```Project Context and Value Added```
 
 This project originated as a **Supervised Fine-Tuning (SFT) Lab Challenge** on the [DataCamp platform](https://app.datacamp.com/learn/projects/2827)
 
@@ -136,3 +137,19 @@ This project originated as a **Supervised Fine-Tuning (SFT) Lab Challenge** on t
 - **Pipeline Logic:** Implemented conditional execution logic (`run_or_load`) to separate the intensive training phase (Colab/GPU) from the lightweight inference phase (local CPU).
 - **Deployment Prototype:** Integrated a **Streamlit** application (`app.py`) to move the model from a simple console output to an interactive, deployable web demonstration.
 - **Best Practices:** Enforced standardized logging (`logger.py`) and explicit configuration management (`config.py`).
+
+## 👩‍💻 ```Developer```
+
+If you would like to contact me, simply click on my name and you will be redirected to my LinkedIn profile. I would be delighted 🤗 to answer your questions and share more details about my skills and experience.
+
+<div align="center">
+
+*AI Engineer*
+| [<img src="https://avatars.githubusercontent.com/u/123108361?v=4" width=115><br><sub>Danniela Rodríguez</sub>](https://www.linkedin.com/in/danniela-rodriguez-jove-/)
+| :---: |
+
+<div align="left">
+
+## 🙌 ```Acknowledgements and Updates```
+
+*Thank you for reviewing this project* 🤗! *If you would like to stay informed about future updates, please star the repository* ⭐. *You can find the option to do so at the top right of the page. Your support is greatly appreciated.*
