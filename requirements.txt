@@ -1,8 +1,8 @@
 trl==0.16.0
 tf-keras==2.19.0
-peft
-torchtune
-torch
-transformers
-datasets
-streamlit
+peft==0.17.1
+torchtune==0.6.1
+torch==2.9.0
+transformers==4.57.1
+datasets==4.4.1
+streamlit==1.51.0
