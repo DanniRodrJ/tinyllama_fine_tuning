@@ -4,6 +4,19 @@ import random
 from config.config import TravelAssistantConfig as Config
 from src.utils.logger import app_logger
 
+def clean_response(response: str) -> str:
+    """Reemplaza los placeholders del dataset por texto real"""
+    replacements = {
+        "{{WEBSITE_URL}}": "the airline's website",
+        "{{APP_NAME}}": "the mobile app",
+        "{{BOOKINGS_OPTION}}": "Bookings",
+        "{{APP}}": "the mobile app",
+        "{{CUSTOMER_SERVICE}}": "customer service"
+    }
+    for placeholder, value in replacements.items():
+        response = response.replace(placeholder, value)
+    return response
+
 def merger_conversation(row):
     """Converts 'instruction' and 'response' columns to conversational format"""
     

@@ -4,10 +4,12 @@
 
 This repository showcases a complete MLOps pipeline for adapting a Large Language Model (LLM) to a specialized domain: an intelligent travel assistant chatbot. The project utilizes Supervised Fine-Tuning (SFT) with Parameter-Efficient Fine-Tuning (PEFT) to achieve high-accuracy responses for travel queries.
 
-## 🚧 ```Quick Access```
+## 🚀 ```LIVE DEMO```
 
-Coming soon
-**[🚀 LIVE DEMO: Interact with the Travel Assistant App](https://tu-usuario.streamlit.app/tu-app)**
+|Modelo | Tipo | Enlace |
+|--------|------|--------|
+| **DialoGPT-medium** | Demo en vivo (rápida) | [Try it now!](https://tu-app.streamlit.app) |
+| **TinyLlama-1.1B** | Demo completa (potente) | [Watch video](https://youtu.be/xxxx) |
 
 ## ⚙️ ```Project Overview and Core Technologies```
 

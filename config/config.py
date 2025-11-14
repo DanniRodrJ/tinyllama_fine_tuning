@@ -2,12 +2,30 @@ from peft import LoraConfig
 from trl import SFTConfig
 
 class TravelAssistantConfig:
+    
+    MODEL_SELECTION = "tinyllama"  # "tinyllama" o "dialogpt"
+    
+    _MODELS = {
+        "dialogpt": {
+            "name": "microsoft/DialoGPT-medium",
+            "adapter_dir": "./models/dialogpt_travel_adapter",
+            "target_modules": ["c_attn", "c_proj"]  # GPT-2 architecture
+        },
+        "tinyllama": {
+            "name": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+            "adapter_dir": "./models/tinyllama_travel_adapter",
+            "target_modules": ["q_proj", "v_proj"]   # Llama architecture
+        }
+    }
+    
+    MODEL_NAME = _MODELS[MODEL_SELECTION]["name"]
+    ADAPTER_OUTPUT_DIR = _MODELS[MODEL_SELECTION]["adapter_dir"]
+    LORA_TARGET_MODULES = _MODELS[MODEL_SELECTION]["target_modules"]
+    
     FORCE_RE_TRAIN = False  # If True, ignore checkpoints and train from scratch
-    MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v0.1"
     DATASET_NAME = 'bitext/Bitext-travel-llm-chatbot-training-dataset'
     DATASET_SPLIT = "train"
     TRAIN_RECORDS_LIMIT = 50
-    ADAPTER_OUTPUT_DIR = "./models/tinyllama_travel_adapter"
     PREPROCESSED_DATA_DIR = "./data/prepocessed_dataset"
     SHOW_LOGGING = False
     LOGGIN_TXT = False
@@ -19,7 +37,7 @@ class TravelAssistantConfig:
         task_type="CAUSAL_LM",
         lora_dropout=0.05,
         bias="none",
-        target_modules=['q_proj', 'v_proj']
+        target_modules=LORA_TARGET_MODULES
     )
 
     # Training Configuration (SFTConfig)
