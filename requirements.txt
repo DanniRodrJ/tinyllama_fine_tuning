@@ -1,5 +1,5 @@
 trl==0.16.0
-tf-keras==2.19.0
+tf-keras==2.20.0
 peft==0.17.1
 torchtune==0.6.1
 torch==2.9.0
