@@ -9,7 +9,7 @@ class TravelAssistantConfig:
     TRAIN_RECORDS_LIMIT = 50
     ADAPTER_OUTPUT_DIR = "./models/tinyllama_travel_adapter"
     PREPROCESSED_DATA_DIR = "./data/prepocessed_dataset"
-    SHOW_LOGGING = True
+    SHOW_LOGGING = False
     LOGGIN_TXT = False
     
     # LoRA Configuration (PEFT)
