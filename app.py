@@ -42,6 +42,9 @@ if not os.path.exists(Config.ADAPTER_OUTPUT_DIR):
     st.error("Error: Trained adapters not found. Please run 'python main.py' first or copy the Colab files to the designated 'models/' folder.")
     st.stop()
     
+with st.spinner("Loading the travel assistant ⏱️... This may take up to 1 minute on first startup."):
+    travel_pipeline = load_llm_pipeline()
+    
 travel_pipeline = load_llm_pipeline()
 
 st.markdown("---")

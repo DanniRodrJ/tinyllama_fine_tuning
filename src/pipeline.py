@@ -62,8 +62,9 @@ class TravelAssistantPipeline:
         # Load the base model
         base_model_for_inference = AutoModelForCausalLM.from_pretrained(
             Config.MODEL_NAME,
-            torch_dtype=torch.float16, 
-            device_map="auto",
+            torch_dtype=torch.float32,  # float16
+            device_map="cpu",  # auto, gpu, cpu 
+            low_cpu_mem_usage=True,  # Reduces memory spikes
             offload_folder=OFFLOAD_FOLDER  # Comment if you have a GPU
         )
 
