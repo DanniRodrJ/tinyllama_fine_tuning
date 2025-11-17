@@ -5,7 +5,7 @@ from config.config import TravelAssistantConfig as Config
 from src.utils.logger import app_logger
 
 def clean_response(response: str) -> str:
-    """Reemplaza los placeholders del dataset por texto real"""
+    """Replace the placeholders in the dataset with actual text."""
     replacements = {
         "{{WEBSITE_URL}}": "the airline's website",
         "{{APP_NAME}}": "the mobile app",
