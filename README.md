@@ -6,7 +6,7 @@ This repository showcases a complete MLOps pipeline for adapting a Large Languag
 
 ## 🚀 ```DEMO```
 
-![image](/assets/Chatbot.png)
+![image](/assets/chatbot.png)
 
 ## ⚙️ ```Project Overview and Core Technologies```
 
