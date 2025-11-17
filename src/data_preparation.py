@@ -12,6 +12,15 @@ def clean_response(response: str) -> str:
         "{{BOOKINGS_OPTION}}": "Bookings",
         "{{APP}}": "the mobile app",
         "{{CUSTOMER_SERVICE}}": "customer service"
+        "{{MY_BOOKINGS_SECTION}}": "My Bookings",
+        "{{MY_BAG_GUARD}}": "My Baggage",
+        "{{BAGGAGE_SECTION}}": "Baggage",
+        "{{BAGGAGE_POLICY}}": "baggage policy",
+        "{{CHECK_IN_SECTION}}": "Check-in",
+        "{{FLIGHT_STATUS}}": "Flight Status",
+        "{{MANAGE_BOOKING}}": "Manage Booking",
+        "{{MY_ACCOUNT}}": "My Account",
+        "{{HELP_CENTER}}": "Help Center",
     }
     for placeholder, value in replacements.items():
         response = response.replace(placeholder, value)

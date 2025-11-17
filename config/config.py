@@ -12,7 +12,7 @@ class TravelAssistantConfig:
             "target_modules": ["c_attn", "c_proj"]  # GPT-2 architecture
         },
         "tinyllama": {
-            "name": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+            "name": "TinyLlama/TinyLlama-1.1B-Chat-v0.1",
             "adapter_dir": "./models/tinyllama_travel_adapter",
             "target_modules": ["q_proj", "v_proj"]   # Llama architecture
         }
@@ -25,7 +25,7 @@ class TravelAssistantConfig:
     FORCE_RE_TRAIN = False  # If True, ignore checkpoints and train from scratch
     DATASET_NAME = 'bitext/Bitext-travel-llm-chatbot-training-dataset'
     DATASET_SPLIT = "train"
-    TRAIN_RECORDS_LIMIT = 50
+    TRAIN_RECORDS_LIMIT = 1000
     PREPROCESSED_DATA_DIR = "./data/prepocessed_dataset"
     SHOW_LOGGING = False
     LOGGIN_TXT = False

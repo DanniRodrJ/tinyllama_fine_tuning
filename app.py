@@ -56,7 +56,7 @@ user_input = st.text_area("Enter your Travel Query (in English):",
 
 if st.button("Generate Response", key="generate_btn", type="primary"):
     if user_input:
-        with st.spinner("Processing query with TinyLlama..."):
+        with st.spinner(f"Processing query with {Config.MODEL_NAME}..."):
             try:
                 response = travel_pipeline.generate_response(user_input)
                 

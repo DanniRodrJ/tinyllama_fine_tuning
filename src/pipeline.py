@@ -101,7 +101,7 @@ class TravelAssistantPipeline:
             self.load_for_inference()
 
 
-    def generate_response(self, instruction, max_new_tokens=100):
+    def generate_response(self, instruction, max_new_tokens=200):
         """Generate a response using the merged model"""
         
         if self.merged_model is None:
