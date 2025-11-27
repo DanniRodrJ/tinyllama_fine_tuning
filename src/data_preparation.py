@@ -11,7 +11,7 @@ def clean_response(response: str) -> str:
         "{{APP_NAME}}": "the mobile app",
         "{{BOOKINGS_OPTION}}": "Bookings",
         "{{APP}}": "the mobile app",
-        "{{CUSTOMER_SERVICE}}": "customer service"
+        "{{CUSTOMER_SERVICE}}": "customer service",
         "{{MY_BOOKINGS_SECTION}}": "My Bookings",
         "{{MY_BAG_GUARD}}": "My Baggage",
         "{{BAGGAGE_SECTION}}": "Baggage",

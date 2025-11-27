@@ -63,7 +63,7 @@ class TravelAssistantPipeline:
         base_model_for_inference = AutoModelForCausalLM.from_pretrained(
             Config.MODEL_NAME,
             torch_dtype=torch.float32,  # float16
-            device_map="cpu",  # auto, gpu, cpu 
+            device_map="cpu",  # Options: auto, gpu, cpu 
             low_cpu_mem_usage=True,  # Reduces memory spikes
             offload_folder=OFFLOAD_FOLDER  # Comment if you have a GPU
         )
@@ -101,7 +101,7 @@ class TravelAssistantPipeline:
             self.load_for_inference()
 
 
-    def generate_response(self, instruction, max_new_tokens=200):
+    def generate_response(self, instruction, max_new_tokens=100):
         """Generate a response using the merged model"""
         
         if self.merged_model is None:
